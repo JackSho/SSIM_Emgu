@@ -17,9 +17,9 @@ namespace EmguTest
 	{
 		static void Main(string[] args)
 		{
-			if (args.Length != 2)
+			if (args.Length < 2)
 			{
-				Console.WriteLine("Usage: EmguTest <img1> <img2>");
+				Console.WriteLine("Usage: EmguTest <img1> <img2> [diff-image]");
 				return;
 			}
 
@@ -29,7 +29,8 @@ namespace EmguTest
 			try
 			{
 				ImageDiff.ImageSSIM imagediff = new ImageDiff.ImageSSIM(str1, str2);
-				imagediff.ImageDifferent = @"C:\Users\se0788\Desktop\2-diff.png";
+				if (args.Length == 3)
+					imagediff.ImageDifferent = args[2];
 				double ssim = imagediff.CalcSSIM();//相似度[0，1]， 等于1代表图片完全相同
 				double ssimRed = imagediff.SSIMRed;
 				double ssimGreen = imagediff.SSIMGreen;
@@ -39,6 +40,7 @@ namespace EmguTest
 				Console.WriteLine("SSIM_Red: {0}", ssimRed);
 				Console.WriteLine("SSIM_Green: {0}", ssimGreen);
 				Console.WriteLine("SSIM_Blue: {0}", ssimBlue);
+				Console.ReadKey();
 			}
 			catch (ImageDiff.ImageDiffException ex)
 			{

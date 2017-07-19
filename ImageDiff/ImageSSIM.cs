@@ -302,13 +302,17 @@ namespace ImageDiff
 			SSIM[(int)RGBIndex.Red] = avg.Red;
 			SSIM[(int)RGBIndex.Green] = avg.Green;
 			SSIM[(int)RGBIndex.Blue] = avg.Blue;
-			SSIM[(int)RGBIndex.All] = avg.Red * avg.Green * avg.Blue;
+			SSIM[(int)RGBIndex.All] = (avg.Red + avg.Green + avg.Blue) / 3.0;
 
 			if (SSIM[(int)RGBIndex.All] == 1)//Same Image
 			{
 				NumDifferences = 0;
 				return SSIM[(int)RGBIndex.All];
 			}
+
+			if (ImageDifferent == null)
+				return SSIM[(int)RGBIndex.All];
+
 			Image<Gray, Single> gray32 = new Image<Gray, float>(imageSize);
 			CvInvoke.CvtColor(ssim_map, gray32, ColorConversion.Bgr2Gray);
 
@@ -327,9 +331,6 @@ namespace ImageDiff
 					diff.Draw(rect, new Bgr(RectColor), Thcikness);
 				}
 			}
-
-			if (ImageDifferent == null)
-				return SSIM[(int)RGBIndex.All];
 
 			try
 			{
