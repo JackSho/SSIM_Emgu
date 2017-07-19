@@ -40,6 +40,7 @@ namespace EmguTest
 				Console.WriteLine("SSIM_Red: {0}", ssimRed);
 				Console.WriteLine("SSIM_Green: {0}", ssimGreen);
 				Console.WriteLine("SSIM_Blue: {0}", ssimBlue);
+				Console.WriteLine("Different Contours: {0}", num);
 				Console.ReadKey();
 			}
 			catch (ImageDiff.ImageDiffException ex)

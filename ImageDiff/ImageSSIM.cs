@@ -285,7 +285,7 @@ namespace ImageDiff
 			temp1 = temp1.Add(new Bgr(C1, C1, C1));
 
 			// (sigma1_sq + sigma2_sq + C2)
-			temp2 = sigma1_sq.Add(sigma12);
+			temp2 = sigma1_sq.Add(sigma2_sq);
 			temp2 = temp2.Add(new Bgr(C2, C2, C2));
 
 			// ((mu1_sq + mu2_sq + C1).*(sigma1_sq + sigma2_sq + C2))
@@ -310,9 +310,6 @@ namespace ImageDiff
 				return SSIM[(int)RGBIndex.All];
 			}
 
-			if (ImageDifferent == null)
-				return SSIM[(int)RGBIndex.All];
-
 			Image<Gray, Single> gray32 = new Image<Gray, float>(imageSize);
 			CvInvoke.CvtColor(ssim_map, gray32, ColorConversion.Bgr2Gray);
 
@@ -323,6 +320,9 @@ namespace ImageDiff
 			CvInvoke.FindContours(gray1, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
 
 			NumDifferences = contours.Size;
+			if (ImageDifferent == null)
+				return SSIM[(int)RGBIndex.All];
+
 			for (int i = 0; i < NumDifferences; i++)
 			{
 				using (VectorOfPoint contour = contours[i])
