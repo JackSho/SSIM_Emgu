@@ -26,9 +26,13 @@ namespace ImageDiff
 		}
 		private double[] SSIM = new double[] { -1, -1, -1, -1 };
 		private static ImageDiffException notCalcedException = new ImageDiffException("The SSIM have not been calculated yet.");
+		private static ImageDiffException outOfSizeException = new ImageDiffException("The two images have different sizes or channels.");
 		private const double C1 = 6.5025;
 		private const double C2 = 58.5225;
 		private int NumDifferences = 0;
+		private string first = null;
+		private string second = null;
+		private string diff = null;
 
 		/// <summary>
 		/// 获取 Red 通道的 SSIM， 如果未计算 SSIM ，会抛异常 ImageDiffException
@@ -101,19 +105,75 @@ namespace ImageDiff
 		public Color RectColor { get; set; }
 
 		/// <summary>
+		/// 获取或设置矩形标记的线宽
+		/// </summary>
+		public int Thcikness { get; set; }
+
+		/// <summary>
 		/// 获取或设置第一张图片的路径
 		/// </summary>
-		public string Image1 { get; set; }
+		public string Image1
+		{
+			get
+			{
+				return first;
+			}
+			set
+			{
+				if (first != value)
+				{
+					first = value;
+
+					SSIM[(int)RGBIndex.Red] = -1;
+					SSIM[(int)RGBIndex.Green] = -1;
+					SSIM[(int)RGBIndex.Blue] = -1;
+					SSIM[(int)RGBIndex.All] = -1;
+
+					NumDifferences = 0;
+				}
+			}
+		}
 
 		/// <summary>
 		/// 获取或设置第二张图片的路径
 		/// </summary>
-		public string Image2 { get; set; }
+		public string Image2 
+		{
+			get
+			{
+				return second;
+			}
+			set
+			{
+				if (second != value)
+				{
+					second = value;
+
+					SSIM[(int)RGBIndex.Red] = -1;
+					SSIM[(int)RGBIndex.Green] = -1;
+					SSIM[(int)RGBIndex.Blue] = -1;
+					SSIM[(int)RGBIndex.All] = -1;
+
+					NumDifferences = 0;
+				}
+			}
+		}
 
 		/// <summary>
 		/// 获取或设置要生成的有不同标记的图片的路径
 		/// </summary>
-		public string ImageDifferent { get; set; }
+		public string ImageDifferent
+		{
+			get
+			{
+				return diff;
+			}
+			set
+			{
+				if (diff != value)
+					diff = value;
+			}
+		}
 
 		/// <summary>
 		/// 构造一个 ImageSSIM 对象，不指定任何路径
@@ -125,6 +185,7 @@ namespace ImageDiff
 			ImageDifferent = null;
 			NumDifferences = 0;
 			RectColor = Color.Red;
+			Thcikness = 2;
 		}
 
 		/// <summary>
@@ -174,6 +235,9 @@ namespace ImageDiff
 			{
 				throw new ImageDiffException(ex.Message);
 			}
+
+			if(img1_temp.Size != img2_temp.Size || img1_temp.NumberOfChannels != img2_temp.NumberOfChannels)
+				throw outOfSizeException;
 
 			int imageWidth = img1_temp.Width;
 			int imageHeight = img1_temp.Height;
@@ -260,7 +324,7 @@ namespace ImageDiff
 				using (VectorOfPoint contour = contours[i])
 				{
 					Rectangle rect = CvInvoke.BoundingRectangle(contour);
-					diff.Draw(rect, new Bgr(RectColor), 2);
+					diff.Draw(rect, new Bgr(RectColor), Thcikness);
 				}
 			}
 

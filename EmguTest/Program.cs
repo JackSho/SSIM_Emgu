@@ -29,6 +29,7 @@ namespace EmguTest
 			try
 			{
 				ImageDiff.ImageSSIM imagediff = new ImageDiff.ImageSSIM(str1, str2);
+				imagediff.ImageDifferent = @"C:\Users\se0788\Desktop\2-diff.png";
 				double ssim = imagediff.CalcSSIM();//相似度[0，1]， 等于1代表图片完全相同
 				double ssimRed = imagediff.SSIMRed;
 				double ssimGreen = imagediff.SSIMGreen;
@@ -42,8 +43,8 @@ namespace EmguTest
 			catch (ImageDiff.ImageDiffException ex)
 			{
 				string msg = ex.Message;
+				Console.WriteLine(msg);
 			}
-
 		}
 	}
 }
